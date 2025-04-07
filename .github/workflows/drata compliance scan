@@ -1,0 +1,23 @@
+name: Drata Compliance Scan
+
+on:
+  push:
+    branches:
+      - 'compliance/**'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  drata-scan:
+    name: Run Drata Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Drata Compliance Scan
+        uses: drata/gh-action@v1
+        with:
+          severity-threshold: low
