@@ -43,6 +43,7 @@ resource "aws_elasticsearch_domain" "TerraFailElasticache_domain" {
 # KMS
 # ---------------------------------------------------------------------
 resource "aws_kms_key" "TerraFailElasticache_key" {
+  # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   description             = "TerraFailElasticache_key"
   deletion_window_in_days = 10
 }
