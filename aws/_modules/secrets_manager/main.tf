@@ -74,6 +74,7 @@ resource "aws_lambda_permission" "TerraFailSecretsManager_permission" {
 # SNS
 # ---------------------------------------------------------------------
 resource "aws_sns_topic" "TerraFailSecretsManager_topic" {
+  # Drata: Define [aws_sns_topic.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   name = "TerraFailSecretsManager_topic"
 }
 
@@ -154,6 +155,7 @@ resource "aws_iam_role_policy" "TerraFailSecretsManager_iam_policy" {
 # KMS
 # ---------------------------------------------------------------------
 resource "aws_kms_key" "TerraFailSecretsManager_key" {
+  # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   description             = "TerraFailSecretsManager key description"
   deletion_window_in_days = 10
   enable_key_rotation     = true
