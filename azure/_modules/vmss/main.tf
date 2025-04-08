@@ -26,7 +26,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "TerraFailVMSS_linux" {
   }
 
   automatic_instance_repair {
-    enabled = false
+    enabled = true
   }
 
   automatic_os_upgrade_policy {
