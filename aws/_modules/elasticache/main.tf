@@ -26,6 +26,7 @@ resource "aws_elasticache_cluster" "TerraFailElasticache_cluster_red" {
 }
 
 resource "aws_elasticache_replication_group" "TerraFailElasticache_replication_group" {
+  # Drata: Specify [aws_elasticache_replication_group.snapshot_retention_limit] to ensure sensitive data is only available when necessary. Setting snapshot retention to 0 will disable automatic backups
   preferred_cache_cluster_azs = ["us-east-2b", "us-east-2c"]
   replication_group_id        = "TerraFailElasticache_replication_group"
   description                 = "TerraFailElasticache_replication_group description"
