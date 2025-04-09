@@ -15,7 +15,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "TerraFailVMSS_linux" {
   admin_username                  = "adminuser"
   disable_password_authentication = false
   admin_password                  = "P@55w0rd1234!"
-  encryption_at_host_enabled      = false
+  encryption_at_host_enabled      = true
   upgrade_mode                    = "Automatic"
 
   source_image_reference {
