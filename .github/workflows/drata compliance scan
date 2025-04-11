@@ -20,4 +20,4 @@ jobs:
       - name: Run Drata Compliance Scan
         uses: drata/gh-action@v1
         with:
-          severity-threshold: low
+          minimumseverity: low
