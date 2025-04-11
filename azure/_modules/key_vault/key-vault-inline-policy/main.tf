@@ -11,18 +11,19 @@ resource "azurerm_resource_group" "TerraFailKeyVault_rg" {
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "TerraFailKeyVault" {
+  # Drata: Configure [azurerm_key_vault.tags] to ensure that organization-wide tagging conventions are followed.
   name                          = "TerraFailKeyVault"
   location                      = azurerm_resource_group.TerraFailKeyVault_rg.location
   resource_group_name           = azurerm_resource_group.TerraFailKeyVault_rg.name
   tenant_id                     = data.azurerm_client_config.current.tenant_id
   sku_name                      = "standard"
-  enable_rbac_authorization     = false
+  enable_rbac_authorization     = true
   soft_delete_retention_days    = 90
   public_network_access_enabled = true
 
   network_acls {
     bypass         = "AzureServices"
-    default_action = "Allow"
+    default_action = "Deny"
   }
 
   access_policy {
@@ -30,12 +31,16 @@ resource "azurerm_key_vault" "TerraFailKeyVault" {
     object_id = ""
 
     key_permissions         = ["Delete", "Purge", "Create", "Get", "Update"]
+    # Drata: Explicitly define permissionss for [azurerm_key_vault.access_policy.key_permissions] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as ([all, delete, purge])
     secret_permissions      = ["Delete", "Purge", "Get", "Set", "List"]
+    # Drata: Explicitly define permissionss for [azurerm_key_vault.access_policy.secret_permissions] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as ([all, delete, purge])
     certificate_permissions = ["Delete", "DeleteIssuers", "Purge", "Create", "Get", "Update"]
   }
 }
 
 resource "azurerm_key_vault_key" "TerraFailKeyVault_key" {
+  # Drata: Configure [azurerm_key_vault_key.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: Configure [azurerm_key_vault_key.rotation_policy] to minimize the risk of key exposure by ensuring that sensitive values are periodically rotated
   name         = "TerraFailKeyVault"
   key_vault_id = azurerm_key_vault.TerraFailKeyVault.id
   key_type     = "EC"
@@ -43,6 +48,7 @@ resource "azurerm_key_vault_key" "TerraFailKeyVault_key" {
 }
 
 resource "azurerm_key_vault_secret" "TerraFailKeyVault_secret" {
+  # Drata: Configure [azurerm_key_vault_secret.tags] to ensure that organization-wide tagging conventions are followed.
   name         = "TerraFailKeyVault_secret"
   value        = "szechuan"
   key_vault_id = azurerm_key_vault.TerraFailKeyVault.id

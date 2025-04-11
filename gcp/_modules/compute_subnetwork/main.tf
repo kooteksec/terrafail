@@ -2,6 +2,7 @@
 # Compute Subnetwork
 # ---------------------------------------------------------------------
 resource "google_compute_subnetwork" "TerraFailComputeSubnetwork" {
+  # Drata: Configure [google_compute_subnetwork.log_config] to ensure that security-relevant events are logged to detect malicious activity
   name          = "TerraFailComputeSubnetwork"
   ip_cidr_range = "10.2.0.0/16"
   region        = "us-central1"
@@ -19,6 +20,7 @@ resource "google_compute_subnetwork_iam_binding" "TerraFailComputeSubnetwork_iam
   subnetwork = google_compute_subnetwork.TerraFailComputeSubnetwork.name
   role       = "roles/compute.networkUser"
   members = [
+    # Drata: Explicitly scope [google_compute_subnetwork_iam_binding.members] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as ([allusers, allauthenticatedusers])
     "allUsers",
   ]
 }
@@ -29,6 +31,7 @@ resource "google_compute_subnetwork_iam_member" "TerraFailComputeSubnetwork_iam_
   subnetwork = google_compute_subnetwork.TerraFailComputeSubnetwork.name
   role       = "roles/compute.networkUser"
   member     = "allUsers"
+  # Drata: Explicitly scope [google_compute_subnetwork_iam_member.member] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as (['allusers', 'allauthenticatedusers'])
 }
 
 # ---------------------------------------------------------------------

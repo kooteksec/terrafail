@@ -33,6 +33,7 @@ resource "aws_db_proxy_target" "TerraFailDB_proxy_target" {
 }
 
 resource "aws_db_option_group" "TerraFailDB_option_group" {
+  # Drata: Configure [aws_db_option_group.tags] to ensure that organization-wide tagging conventions are followed.
   name                     = "TerraFailDB_option_group"
   option_group_description = "Terraform Option Group"
   engine_name              = "mysql"
@@ -55,7 +56,7 @@ resource "aws_db_proxy" "TerraFailDB_proxy" {
   vpc_subnet_ids = [aws_subnet.TerraFailDB_subnet.id, aws_subnet.TerraFailDB_subnet_2.id]
   engine_family  = "MYSQL"
   debug_logging  = true
-  require_tls    = false
+  require_tls    = true
 
   auth {
     secret_arn = aws_secretsmanager_secret.TerraFailDB_secret.arn
@@ -64,6 +65,7 @@ resource "aws_db_proxy" "TerraFailDB_proxy" {
 }
 
 resource "aws_db_subnet_group" "TerraFailDB_subnet_group" {
+  # Drata: Configure [aws_db_subnet_group.tags] to ensure that organization-wide tagging conventions are followed.
   name        = "TerraFailDB_subnet_group"
   description = "Our main group of subnets"
   subnet_ids  = [aws_subnet.TerraFailDB_subnet.id, aws_subnet.TerraFailDB_subnet_2.id]
@@ -151,6 +153,8 @@ resource "aws_secretsmanager_secret_policy" "TerraFailDB_secret_policy" {
   secret_arn = aws_secretsmanager_secret.TerraFailDB_secret.arn
 
   policy = <<POLICY
+  # Drata: Explicitly define principals for [aws_secretsmanager_secret_policy.policy] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as (*)
+  # Drata: Explicitly define actions for [aws_secretsmanager_secret_policy.policy] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as (*)
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -170,6 +174,7 @@ POLICY
 # KMS
 # ---------------------------------------------------------------------
 resource "aws_kms_key" "TerraFailDB_key" {
+  # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   description             = "TerraFailDB key description"
   deletion_window_in_days = 10

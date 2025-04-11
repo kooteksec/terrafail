@@ -10,7 +10,7 @@ resource "google_app_engine_flexible_app_version" "TerraFailAppEngine_version_fl
   project    = "terrafail"
   version_id = "v2"
   service    = google_app_engine_application.TerraFailAppEngine.id
-  runtime    = "java8"
+  runtime    = "java21"
   automatic_scaling {
     cool_down_period = "120s"
     cpu_utilization {
@@ -24,11 +24,11 @@ resource "google_app_engine_flexible_app_version" "TerraFailAppEngine_version_fl
     path = "/"
   }
   api_config {
-    security_level = "SECURE_DEFAULT"
+    security_level = "SECURE_ALWAYS"
     script         = "path/to/script.py"
   }
   handlers {
-    security_level = "SECURE_DEFAULT"
+    security_level = "SECURE_ALWAYS"
   }
 }
 
@@ -36,12 +36,12 @@ resource "google_app_engine_standard_app_version" "TerraFailAppEngine_version_st
   project    = "terrafail"
   version_id = "v1"
   service    = google_app_engine_application.TerraFailAppEngine.id
-  runtime    = "java8"
+  runtime    = "java21"
   entrypoint {
     shell = "python ./app.py"
   }
   handlers {
-    security_level = "SECURE_DEFAULT"
+    security_level = "SECURE_ALWAYS"
   }
   deployment {
     zip {
@@ -54,4 +54,5 @@ resource "google_app_engine_firewall_rule" "TerraFailAppEngine_firewall_rule" {
   project      = "terrafail"
   action       = "ALLOW"
   source_range = "*"
+  # Drata: Ensure that [google_app_engine_firewall_rule.source_range] is explicitly defined and narrowly scoped to only allow traffic from trusted sources
 }

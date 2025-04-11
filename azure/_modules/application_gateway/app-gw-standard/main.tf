@@ -20,8 +20,8 @@ resource "azurerm_application_gateway" "TerraFailAppGateway" {
 
   sku {
     name     = "Standard_Small"
-    tier     = "Standard"
-    capacity = 1
+    tier     = "Standard" # Drata: sku.tier should be set to any of Standard_V2, WAF_V2 # Drata: sku.tier should be set to any of Standard_V2, WAF_V2
+    capacity = 2
   }
 
   gateway_ip_configuration {
@@ -50,11 +50,11 @@ resource "azurerm_application_gateway" "TerraFailAppGateway" {
     name                  = "backend-http-settings"
     cookie_based_affinity = "Disabled"
     port                  = 63
-    protocol              = "http"
+    protocol              = "Https"
     request_timeout       = 0
 
     connection_draining {
-      enabled           = false
+      enabled           = true
       drain_timeout_sec = 4000
     }
   }
@@ -63,13 +63,13 @@ resource "azurerm_application_gateway" "TerraFailAppGateway" {
     name                           = "http-listener-1"
     frontend_ip_configuration_name = "ip_config_1"
     frontend_port_name             = "front_end_port_1"
-    protocol                       = "HTTP"
+    protocol                       = "Https"
   }
 
   ssl_policy {
     policy_type          = "Predefined"
-    min_protocol_version = "TLSv1_1"
-    policy_name          = "AppGwSslPolicy20150501"
+    min_protocol_version = "TLSv1_2"
+    policy_name          = "AppGwSslPolicy20170401S"
   }
 
   ssl_certificate {
@@ -93,6 +93,9 @@ resource "azurerm_public_ip" "TerraFailAppGateway_ip_config" {
 # KeyVault
 # ---------------------------------------------------------------------
 resource "azurerm_key_vault" "TerraFailAppGateway_vault" {
+  # Drata: Set [azurerm_key_vault.enable_rbac_authorization] to [true] to configure resource authentication using role based access control (RBAC). RBAC allows for more granularity when defining permissions for users and workloads that can access a resource
+  # Drata: Configure [azurerm_key_vault.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: Set [azurerm_key_vault.public_network_access_enabled] to [false] to prevent unintended public access. Ensure that only trusted users and IP addresses are explicitly allowed access, if a publicly accessible service is required for your business use case this finding can be excluded
   name                        = "TerraFailAppGateway_vault"
   location                    = azurerm_resource_group.TerraFailAppGateway_rg.location
   resource_group_name         = azurerm_resource_group.TerraFailAppGateway_rg.name

@@ -9,6 +9,8 @@ resource "azurerm_resource_group" "TerraFailVM_rg" {
 # Virtual Machine
 # ---------------------------------------------------------------------
 resource "azurerm_linux_virtual_machine" "TerraFailVM_linux" {
+  # Drata: Configure [azurerm_windows_virtual_machine.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: It is recommended to create two or more virtual machines within an availability set to improve application redundancy and availability.
   name                            = "TerraFailVM_linux"
   resource_group_name             = azurerm_resource_group.TerraFailVM_rg.name
   location                        = azurerm_resource_group.TerraFailVM_rg.location
@@ -22,7 +24,7 @@ resource "azurerm_linux_virtual_machine" "TerraFailVM_linux" {
   network_interface_ids = [
     azurerm_network_interface.TerraFailVM_linux_network_interface.id,
   ]
-  encryption_at_host_enabled = false
+  encryption_at_host_enabled = true
 
   os_disk {
     caching              = "ReadWrite"
@@ -38,6 +40,8 @@ resource "azurerm_linux_virtual_machine" "TerraFailVM_linux" {
 }
 
 resource "azurerm_windows_virtual_machine" "TerraFailVM_windows" {
+  # Drata: Configure [azurerm_windows_virtual_machine.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: It is recommended to create two or more virtual machines within an availability set to improve application redundancy and availability.
   name                = "TerraFailVM_windows"
   resource_group_name = azurerm_resource_group.TerraFailVM_rg.name
   location            = azurerm_resource_group.TerraFailVM_rg.location
@@ -49,10 +53,10 @@ resource "azurerm_windows_virtual_machine" "TerraFailVM_windows" {
   network_interface_ids = [
     azurerm_network_interface.TerraFailVM_windows_network_interface.id,
   ]
-  encryption_at_host_enabled = false
+  encryption_at_host_enabled = true
 
   winrm_listener {
-    protocol = "Http"
+    protocol = "Https"
   }
 
   os_disk {
@@ -72,6 +76,7 @@ resource "azurerm_windows_virtual_machine" "TerraFailVM_windows" {
 # Network
 # ---------------------------------------------------------------------
 resource "azurerm_virtual_network" "TerraFailVM_virtual_network" {
+  # Drata: Configure [azurerm_virtual_network.tags] to ensure that organization-wide tagging conventions are followed.
   name                = "TerraFailVM_virtual_network"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.TerraFailVM_rg.location
@@ -125,6 +130,9 @@ resource "azurerm_availability_set" "TerraFailVM_availability_set" {
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "TerraFailVM_vault" {
+  # Drata: Set [azurerm_key_vault.enable_rbac_authorization] to [true] to configure resource authentication using role based access control (RBAC). RBAC allows for more granularity when defining permissions for users and workloads that can access a resource
+  # Drata: Configure [azurerm_key_vault.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: Set [azurerm_key_vault.public_network_access_enabled] to [false] to prevent unintended public access. Ensure that only trusted users and IP addresses are explicitly allowed access, if a publicly accessible service is required for your business use case this finding can be excluded
   name                        = "TerraFailVM_vault"
   location                    = azurerm_resource_group.TerraFailVM_rg.location
   resource_group_name         = azurerm_resource_group.TerraFailVM_rg.name
@@ -135,6 +143,8 @@ resource "azurerm_key_vault" "TerraFailVM_vault" {
 }
 
 resource "azurerm_key_vault_key" "TerraFailVM_vault_key" {
+  # Drata: Configure [azurerm_key_vault_key.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: Configure [azurerm_key_vault_key.rotation_policy] to minimize the risk of key exposure by ensuring that sensitive values are periodically rotated
   name         = "TerraFailVM_vault_key"
   key_vault_id = azurerm_key_vault.TerraFailVM_vault.id
   key_type     = "RSA"
@@ -161,6 +171,7 @@ resource "azurerm_key_vault_access_policy" "TerraFailVM_vault_disk_access_policy
   object_id = azurerm_disk_encryption_set.TerraFailVM_disk_encryption_set.identity.0.principal_id
 
   key_permissions = [
+    # Drata: Explicitly define permissionss for [azurerm_key_vault_access_policy.key_permissions] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as ([all, delete, purge])
     "Create",
     "Delete",
     "Get",
@@ -182,6 +193,7 @@ resource "azurerm_key_vault_access_policy" "TerraFailVM_vault_user_access_policy
   object_id = data.azurerm_client_config.current.object_id
 
   key_permissions = [
+    # Drata: Explicitly define permissionss for [azurerm_key_vault_access_policy.key_permissions] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as ([all, delete, purge])
     "Create",
     "Delete",
     "Get",

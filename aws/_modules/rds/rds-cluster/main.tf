@@ -4,22 +4,25 @@
 # RDS
 # ---------------------------------------------------------------------
 resource "aws_rds_cluster" "TerraFailRDS_cluster" {
+  # Drata: Configure [aws_rds_cluster.tags] to ensure that organization-wide tagging conventions are followed.
   cluster_identifier                  = "TerraFailRDS_cluster"
   database_name                       = "terrafailrdsdb"
   engine                              = "aurora-mysql"
   master_username                     = "terrafailusername"
   master_password                     = "randomlydecidedpassword41characters"
   backup_retention_period             = 1
+  # Drata: Specify [aws_rds_cluster.backup_retention_period] to ensure sensitive data is only available when necessary. It is recommended to configure a non-default value appropriate for your specific use-case. AWS defaults to 7 days
   final_snapshot_identifier           = "DELETE"
   skip_final_snapshot                 = true
   deletion_protection                 = false
   db_subnet_group_name                = aws_db_subnet_group.TerraFailRDS_subnet_group.name
   engine_version                      = "8.0.mysql_aurora.3.03.0"
-  storage_encrypted                   = false
+  storage_encrypted                   = true
   iam_database_authentication_enabled = false
 }
 
 resource "aws_db_option_group" "TerraFailRDS_option_group" {
+  # Drata: Configure [aws_db_option_group.tags] to ensure that organization-wide tagging conventions are followed.
   name                     = "TerraFailRDS_option_group"
   option_group_description = "Terraform Option Group"
   engine_name              = "mysql"
@@ -42,7 +45,7 @@ resource "aws_db_proxy" "TerraFailRDS_proxy" {
   vpc_subnet_ids = [aws_subnet.TerraFailRDS_subnet.id, aws_subnet.TerraFailRDS_subnet_2.id]
   engine_family  = "MYSQL"
   debug_logging  = true
-  require_tls    = false
+  require_tls    = true
 
   auth {
     secret_arn = aws_secretsmanager_secret.TerraFailRDS_secret.arn
@@ -51,6 +54,7 @@ resource "aws_db_proxy" "TerraFailRDS_proxy" {
 }
 
 resource "aws_db_subnet_group" "TerraFailRDS_subnet_group" {
+  # Drata: Configure [aws_db_subnet_group.tags] to ensure that organization-wide tagging conventions are followed.
   name        = "TerraFailRDS_subnet_group"
   description = "Our main group of subnets"
   subnet_ids  = [aws_subnet.TerraFailRDS_subnet.id, aws_subnet.TerraFailRDS_subnet_2.id]
@@ -127,6 +131,8 @@ resource "aws_secretsmanager_secret_policy" "TerraFailRDS_secret_policy" {
   secret_arn = aws_secretsmanager_secret.TerraFailRDS_secret.arn
 
   policy = <<POLICY
+  # Drata: Explicitly define principals for [aws_secretsmanager_secret_policy.policy] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as (*)
+  # Drata: Explicitly define actions for [aws_secretsmanager_secret_policy.policy] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as (*)
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -146,6 +152,7 @@ POLICY
 # KMS
 # ---------------------------------------------------------------------
 resource "aws_kms_key" "TerraFailRDS_key" {
+  # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   description             = "TerraFailRDS key description"
   deletion_window_in_days = 10

@@ -4,6 +4,8 @@
 # DynamoDB
 # ---------------------------------------------------------------------
 resource "aws_dynamodb_table" "TerraFailDynamoDB" {
+  # Drata: Configure [aws_dynamodb_table.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: Set [dynamo_dbtable.table.deletion_protection_enabled] to [true] to prevent accidental or unauthorized deletion of critical assets
   name           = "TerraFailDynamoDB"
   billing_mode   = "PROVISIONED"
   hash_key       = "UserId"
@@ -33,7 +35,7 @@ resource "aws_dynamodb_table" "TerraFailDynamoDB" {
 
 
   point_in_time_recovery {
-    enabled = false
+    enabled = true
   }
 
   timeouts {
@@ -60,6 +62,7 @@ resource "aws_dynamodb_table" "TerraFailDynamoDB" {
 # KMS
 # ---------------------------------------------------------------------
 resource "aws_kms_key" "TerraFailDynamoDB_key" {
+  # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   description             = "TerraFailDynamoDB encryption key"
   deletion_window_in_days = 10

@@ -26,19 +26,22 @@ resource "aws_lambda_event_source_mapping" "TerraFailLambda_event_source_mapping
 }
 
 resource "aws_lambda_function" "TerraFailLambda_function" {
+  # Drata: Configure [aws_lambda_function.vpc_config] to improve network monitoring capabilities and ensure network communication is restricted to trusted sources. Exclude this finding if there is a need for your Lambda Function to access external endpoints
   function_name                  = "TerraFailLambda_function"
   role                           = aws_iam_role.TerraFailLambda_role.arn
   filename                       = "my-deployment-package.zip"
   handler                        = "index.handler"
-  runtime                        = "dotnetcore3.1"
+  runtime                        = "dotnet8"
   reserved_concurrent_executions = 0
   layers                         = [aws_TerraFailLambda_layer_version_version.TerraFailLambda_layer_version.arn]
 }
 
 resource "aws_lambda_permission" "TerraFailLambda_permission" {
   action        = "*"
+  # Drata: Explicitly define actions for [aws_lambda_permission.action] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as (*)
   function_name = aws_lambda_function.TerraFailLambda_function.arn
   principal     = "*"
+  # Drata: Explicitly define principals for [aws_lambda_permission.principal] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as (*)
 }
 
 resource "aws_TerraFailLambda_layer_version_version_permission" "TerraFailTerraFailLambda_layer_version_permission" {
@@ -60,6 +63,7 @@ resource "aws_TerraFailLambda_layer_version_version" "TerraFailLambda_layer_vers
 # Kinesis
 # ---------------------------------------------------------------------
 resource "aws_kinesis_stream" "TerraFailLambda_stream" {
+  # Drata: Set [aws_kinesis_stream.encryption_type] to [KMS] to ensure transparent data encryption is enabled
   name             = "TerraFailLambda_stream"
   shard_count      = 1
   retention_period = 48
@@ -82,6 +86,8 @@ resource "aws_kinesis_stream" "TerraFailLambda_stream" {
 # SNS
 # ---------------------------------------------------------------------
 resource "aws_sns_topic" "TerraFailLambda_topic" {
+  # Drata: Configure [aws_sns_topic.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: Define [aws_sns_topic.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   # Drata: Define [aws_sns_topic.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   name = "TerraFailLambda_topic"
 }
@@ -90,13 +96,16 @@ resource "aws_sns_topic" "TerraFailLambda_topic" {
 # Network
 # ---------------------------------------------------------------------
 resource "aws_security_group" "TerraFailLambda_security_group" {
+  # Drata: Configure [aws_security_group.tags] to ensure that organization-wide tagging conventions are followed.
   vpc_id = aws_vpc.TerraFailLambda_vpc.id
   egress {
     from_port        = 0
     to_port          = 0
     protocol         = "-1"
     cidr_blocks      = ["0.0.0.0/0"]
+    # Drata: Ensure that [aws_security_group.egress.cidr_blocks] is explicitly defined and narrowly scoped to only allow traffic to trusted sources
     ipv6_cidr_blocks = ["::/0"]
+  # Drata: Ensure that [aws_security_group.egress.ipv6_cidr_blocks] is explicitly defined and narrowly scoped to only allow traffic to trusted sources
   }
 }
 
@@ -110,6 +119,7 @@ resource "aws_subnet" "TerraFailLambda_subnet" {
 }
 
 resource "aws_vpc" "TerraFailLambda_vpc" {
+  # Drata: Configure [aws_vpc.tags] to ensure that organization-wide tagging conventions are followed.
   cidr_block = "10.0.0.0/16"
 }
 
@@ -117,6 +127,7 @@ resource "aws_vpc" "TerraFailLambda_vpc" {
 # IAM
 # ---------------------------------------------------------------------
 resource "aws_iam_role" "TerraFailLambda_role" {
+  # Drata: Configure [aws_iam_role.tags] to ensure that organization-wide tagging conventions are followed.
   name               = "TerraFailLambda_role"
   assume_role_policy = <<EOF
 {
@@ -140,6 +151,7 @@ resource "aws_iam_role_policy" "TerraFailLambda_policy" {
   name = "TerraFailLambda_policy"
   role = aws_iam_role.TerraFailLambda_role.id
   policy = jsonencode({
+    # Drata: Explicitly define resources for [aws_iam_role.inline_policy.policy] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as ([*])
     Version = "2012-10-17",
     Statement = [
       {

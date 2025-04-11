@@ -3,11 +3,13 @@
 # ELBv2
 # ---------------------------------------------------------------------
 resource "aws_lb" "TerraFailLB" {
+  # Drata: Configure [aws_lb.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: Default network security groups allow broader access than required. Specify [aws_lb.security_groups] to configure more granular access control
   name                       = "TerraFailLB"
   load_balancer_type         = "application"
   drop_invalid_header_fields = true
   desync_mitigation_mode     = "monitor"
-  internal                   = false
+  internal                   = true
 
   subnet_mapping {
     subnet_id = aws_subnet.TerraFailLB_subnet.id
@@ -66,7 +68,7 @@ resource "aws_lb_listener_rule" "TerraFailLB_listener_rule" {
 resource "aws_lb_listener" "TerraFailLB_listener" {
   load_balancer_arn = aws_lb.TerraFailLB.arn
   port              = 99
-  protocol          = "HTTP"
+  protocol          = "HTTPS"
 
   default_action {
     type             = "forward"
@@ -123,10 +125,12 @@ resource "aws_subnet" "TerraFailLB_subnet_default" {
 }
 
 resource "aws_vpc" "TerraFailLB_vpc" {
+  # Drata: Configure [aws_vpc.tags] to ensure that organization-wide tagging conventions are followed.
   cidr_block = "10.0.0.0/16"
 }
 
 resource "aws_security_group" "TerraFailLB_security_group" {
+  # Drata: Configure [aws_security_group.tags] to ensure that organization-wide tagging conventions are followed.
   name                   = "TerraFailLB_security_group"
   description            = "Allow TLS inbound traffic"
   vpc_id                 = aws_vpc.TerraFailLB_vpc.id
@@ -146,6 +150,7 @@ resource "aws_security_group" "TerraFailLB_security_group" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  # Drata: Ensure that [aws_security_group.egress.cidr_blocks] is explicitly defined and narrowly scoped to only allow traffic to trusted sources
   }
 }
 
@@ -153,8 +158,10 @@ resource "aws_security_group" "TerraFailLB_security_group" {
 # S3
 # ---------------------------------------------------------------------
 resource "aws_s3_bucket" "TerraFailLB_bucket" {
+  # Drata: Configure [aws_s3_bucket.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: Set [aws_s3_bucket_versioning.versioning_configuration.status] to [Enabled] to enable infrastructure versioning and prevent accidental deletions and overrides
   bucket = "TerraFailLB_bucket"
-  acl    = "public-read-write"
+  acl    = "private"
 }
 
 # ---------------------------------------------------------------------
@@ -248,6 +255,8 @@ resource "aws_launch_template" "TerraFailLB_launch_template" {
 # KMS
 # ---------------------------------------------------------------------
 resource "aws_kms_key" "TerraFailLB_key" {
+  # Drata: Configure [aws_kms_key.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   description             = "TerraFailLB_key"
   deletion_window_in_days = 10
@@ -262,6 +271,7 @@ resource "aws_iam_instance_profile" "TerraFailLB_instance_profile" {
 }
 
 resource "aws_iam_role" "TerraFailLB_role" {
+  # Drata: Configure [aws_iam_role.tags] to ensure that organization-wide tagging conventions are followed.
   name = "TerraFailLB_role"
   path = "/"
 

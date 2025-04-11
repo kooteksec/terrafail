@@ -81,6 +81,7 @@ resource "aws_iam_role_policy_attachment" "TerraFailEKS_AmazonEC2ContainerRegist
 }
 
 resource "aws_iam_role" "TerraFailEKS_role" {
+  # Drata: Configure [aws_iam_role.tags] to ensure that organization-wide tagging conventions are followed.
   name = "TerraFailEKS_role"
 
   assume_role_policy = <<POLICY
@@ -101,6 +102,7 @@ POLICY
 }
 
 resource "aws_iam_role" "TerraFailEKS_ec2_role" {
+  # Drata: Configure [aws_iam_role.tags] to ensure that organization-wide tagging conventions are followed.
   name = "TerraFailEKS_ec2_role"
 
   assume_role_policy = <<POLICY
@@ -134,7 +136,7 @@ resource "aws_subnet" "TerraFailEKS_subnet" {
   cidr_block        = "10.0.0.0/24"
   availability_zone = "us-east-2c"
 
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
   tags = {
     Name = "Main"
   }
@@ -165,6 +167,7 @@ resource "aws_internet_gateway" "TerraFailEKS_gateway" {
 }
 
 resource "aws_route_table" "TerraFailEKS_route_table" {
+  # Drata: Configure [aws_route_table.tags] to ensure that organization-wide tagging conventions are followed.
   vpc_id = aws_vpc.TerraFailEKS_vpc.id
 
   route {
@@ -200,6 +203,8 @@ resource "aws_security_group" "TerraFailEKS_security_group" {
 # KMS
 # ---------------------------------------------------------------------
 resource "aws_kms_key" "TerraFailEKS_key" {
+  # Drata: Configure [aws_kms_key.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   description              = "KMS key to encrypt/decrypt"
   deletion_window_in_days  = 10

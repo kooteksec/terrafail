@@ -9,6 +9,7 @@ resource "azurerm_resource_group" "TerraFailCosmosDB_rg" {
 # CosmosDB
 # ---------------------------------------------------------------------
 resource "azurerm_cosmosdb_account" "TerraFailCosmosDB_account" {
+  # Drata: Configure [azurerm_cosmosdb_account.tags] to ensure that organization-wide tagging conventions are followed.
   name                              = "TerraFailCosmosDB_account"
   resource_group_name               = azurerm_resource_group.TerraFailCosmosDB_rg.name
   location                          = azurerm_resource_group.TerraFailCosmosDB_rg.location
@@ -88,6 +89,7 @@ resource "azurerm_subnet" "TerraFailCosmosDB_subnet" {
 }
 
 resource "azurerm_virtual_network" "TerraFailCosmosDB_virtual_network" {
+  # Drata: Configure [azurerm_virtual_network.tags] to ensure that organization-wide tagging conventions are followed.
   name                = "TerraFailCosmosDB_virtual_network"
   location            = azurerm_resource_group.TerraFailCosmosDB_rg.location
   resource_group_name = azurerm_resource_group.TerraFailCosmosDB_rg.name
@@ -95,11 +97,14 @@ resource "azurerm_virtual_network" "TerraFailCosmosDB_virtual_network" {
 }
 
 resource "azurerm_storage_account" "TerraFailCosmosDB_storage" {
+  # Drata: Set [azurerm_storage_account.enable_https_traffic_only] to [true] to ensure secure protocols are being used to encrypt resource traffic
+  # Drata: Set [azurerm_storage_account.min_tls_version] to [TLS1_2] to ensure security policies are configured using the latest secure TLS version
   name                     = "TerraFailCosmosDB_storage"
   location                 = azurerm_resource_group.TerraFailCosmosDB_rg.location
   resource_group_name      = azurerm_resource_group.TerraFailCosmosDB_rg.name
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  # Drata: Configure [azurerm_storage_account.account_replication_type] to improve infrastructure availability and resilience. To create highly available Storage Accounts, set azurerm_storage_account.account_replication_type to a geo-redundant storage option by selecting one of the following SKUs: ['standard_grs', 'standard_gzrs', 'standard_ragrs', 'standard_ragzrs', 'grs', 'gzrs', 'ragrs', 'ragzrs']
 
   tags = {
     environment = "staging"

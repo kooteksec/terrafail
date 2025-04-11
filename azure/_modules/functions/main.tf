@@ -23,12 +23,13 @@ resource "azurerm_linux_function_app" "TerraFailFunction_linux" {
     cors {
       allowed_origins = ["*"]
     }
-    minimum_tls_version      = "1.0"
+    minimum_tls_version      = 1.2
     remote_debugging_enabled = true
 
     ip_restriction {
       action     = "Allow"
       ip_address = "0.0.0.0/0"
+    # Drata: Ensure that [azurerm_linux_function_app.site_config.ip_restriction.ip_address] is explicitly defined and narrowly scoped to only allow trusted sources to access Web App
     }
   }
 }
@@ -47,12 +48,13 @@ resource "azurerm_windows_function_app" "TerraFailFunction_windows" {
     cors {
       allowed_origins = ["*"]
     }
-    minimum_tls_version      = "1.0"
+    minimum_tls_version      = 1.2
     remote_debugging_enabled = true
 
     ip_restriction {
       action     = "Allow"
       ip_address = "0.0.0.0/0"
+    # Drata: Ensure that [azurerm_windows_function_app.site_config.ip_restriction.ip_address] is explicitly defined and narrowly scoped to only allow trusted sources to access Web App
     }
   }
 }
@@ -69,11 +71,16 @@ resource "azurerm_service_plan" "TerraFailFunction_service_plan" {
 }
 
 resource "azurerm_storage_account" "TerraFailFunction_storage_linux" {
+  # Drata: Configure [azurerm_storage_account.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: Set [azurerm_storage_account.enable_https_traffic_only] to [true] to ensure secure protocols are being used to encrypt resource traffic
+  # Drata: Set [azurerm_storage_account.public_network_access_enabled] to [false] to prevent unintended public access. Ensure that only trusted users and IP addresses are explicitly allowed access, if a publicly accessible service is required for your business use case this finding can be excluded
+  # Drata: Set [azurerm_storage_account.min_tls_version] to [TLS1_2] to ensure security policies are configured using the latest secure TLS version
   name                     = "TerraFailFunction_storage_linux"
   resource_group_name      = azurerm_resource_group.TerraFailFunction_rg.name
   location                 = azurerm_resource_group.TerraFailFunction_rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  # Drata: Configure [azurerm_storage_account.account_replication_type] to improve infrastructure availability and resilience. To create highly available Storage Accounts, set azurerm_storage_account.account_replication_type to a geo-redundant storage option by selecting one of the following SKUs: ['standard_grs', 'standard_gzrs', 'standard_ragrs', 'standard_ragzrs', 'grs', 'gzrs', 'ragrs', 'ragzrs']
 
   identity {
     type         = "UserAssigned"
@@ -81,11 +88,16 @@ resource "azurerm_storage_account" "TerraFailFunction_storage_linux" {
   }
 }
 resource "azurerm_storage_account" "TerraFailFunction_storage_windows" {
+  # Drata: Configure [azurerm_storage_account.tags] to ensure that organization-wide tagging conventions are followed.
+  # Drata: Set [azurerm_storage_account.enable_https_traffic_only] to [true] to ensure secure protocols are being used to encrypt resource traffic
+  # Drata: Set [azurerm_storage_account.public_network_access_enabled] to [false] to prevent unintended public access. Ensure that only trusted users and IP addresses are explicitly allowed access, if a publicly accessible service is required for your business use case this finding can be excluded
+  # Drata: Set [azurerm_storage_account.min_tls_version] to [TLS1_2] to ensure security policies are configured using the latest secure TLS version
   name                     = "TerraFailFunction_storage_windows"
   resource_group_name      = azurerm_resource_group.TerraFailFunction_rg.name
   location                 = azurerm_resource_group.TerraFailFunction_rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  # Drata: Configure [azurerm_storage_account.account_replication_type] to improve infrastructure availability and resilience. To create highly available Storage Accounts, set azurerm_storage_account.account_replication_type to a geo-redundant storage option by selecting one of the following SKUs: ['standard_grs', 'standard_gzrs', 'standard_ragrs', 'standard_ragzrs', 'grs', 'gzrs', 'ragrs', 'ragzrs']
 
   identity {
     type         = "UserAssigned"
