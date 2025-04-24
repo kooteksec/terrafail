@@ -43,6 +43,7 @@ resource "aws_elasticsearch_domain" "TerraFailElasticache_domain" {
 # KMS
 # ---------------------------------------------------------------------
 resource "aws_kms_key" "TerraFailElasticache_key" {
+  # Drata: Configure [aws_kms_key.tags] to ensure that organization-wide tagging conventions are followed.
   # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   # Drata: Define [aws_kms_key.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   description             = "TerraFailElasticache_key"
