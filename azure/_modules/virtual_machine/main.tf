@@ -9,6 +9,7 @@ resource "azurerm_resource_group" "TerraFailVM_rg" {
 # Virtual Machine
 # ---------------------------------------------------------------------
 resource "azurerm_linux_virtual_machine" "TerraFailVM_linux" {
+  # Drata: It is recommended to create two or more virtual machines within an availability set to improve application redundancy and availability.
   name                            = "TerraFailVM_linux"
   resource_group_name             = azurerm_resource_group.TerraFailVM_rg.name
   location                        = azurerm_resource_group.TerraFailVM_rg.location
