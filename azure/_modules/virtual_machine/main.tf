@@ -22,7 +22,7 @@ resource "azurerm_linux_virtual_machine" "TerraFailVM_linux" {
   network_interface_ids = [
     azurerm_network_interface.TerraFailVM_linux_network_interface.id,
   ]
-  encryption_at_host_enabled = false
+  encryption_at_host_enabled = true
 
   os_disk {
     caching              = "ReadWrite"
