@@ -69,6 +69,7 @@ resource "azurerm_service_plan" "TerraFailFunction_service_plan" {
 }
 
 resource "azurerm_storage_account" "TerraFailFunction_storage_linux" {
+  # Drata: Set [azurerm_storage_account.min_tls_version] to [TLS1_2] to ensure security policies are configured using the latest secure TLS version
   # Drata: Set [azurerm_storage_account.enable_https_traffic_only] to [true] to ensure secure protocols are being used to encrypt resource traffic
   # Drata: Set [azurerm_storage_account.public_network_access_enabled] to [false] to prevent unintended public access. Ensure that only trusted users and IP addresses are explicitly allowed access, if a publicly accessible service is required for your business use case this finding can be excluded
   name                     = "TerraFailFunction_storage_linux"
