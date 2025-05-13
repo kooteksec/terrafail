@@ -3,6 +3,7 @@
 # ---------------------------------------------------------------------
 resource "aws_sns_topic" "TerraFailSNS" {
   # Drata: Define [aws_sns_topic.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
+  # Drata: Define [aws_sns_topic.policy] to restrict access to your resource. Follow the principal of minimum necessary access, ensuring permissions are scoped to trusted entities. Exclude this finding if you are managing access via IAM policies
   name         = "TerraFailSNS"
   display_name = "TerraFailSNS"
   policy       = <<EOF
