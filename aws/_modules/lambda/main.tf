@@ -90,6 +90,7 @@ resource "aws_sns_topic" "TerraFailLambda_topic" {
 # Network
 # ---------------------------------------------------------------------
 resource "aws_security_group" "TerraFailLambda_security_group" {
+  # Drata: Configure [aws_security_group.tags] to ensure that organization-wide tagging conventions are followed.
   vpc_id = aws_vpc.TerraFailLambda_vpc.id
   egress {
     from_port        = 0
