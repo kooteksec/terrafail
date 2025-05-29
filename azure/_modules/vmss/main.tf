@@ -7,6 +7,7 @@ resource "azurerm_resource_group" "TerraFailVMSS_rg" {
 # Virtual Machine Scale Set
 # ---------------------------------------------------------------------
 resource "azurerm_linux_virtual_machine_scale_set" "TerraFailVMSS_linux" {
+  # Drata: Configure [azurerm_virtual_machine_scale_set.tags] to ensure that organization-wide tagging conventions are followed.
   # Drata: Configure [azurerm_windows_virtual_machine_scale_set.zones] to improve infrastructure availability and resilience
   # Drata: Default network security groups allow broader access than required. Specify [azurerm_virtual_machine_scale_set.network_profile.network_security_group_id] to configure more granular access control
   name                            = "TerraFailVMSS_linux"
