@@ -3,6 +3,7 @@
 # ELBv2
 # ---------------------------------------------------------------------
 resource "aws_lb" "TerraFailLB" {
+  # Drata: Default network security groups allow broader access than required. Specify [aws_lb.security_groups] to configure more granular access control
   # Drata: Configure [aws_lb.tags] to ensure that organization-wide tagging conventions are followed.
   name                       = "TerraFailLB"
   load_balancer_type         = "application"
