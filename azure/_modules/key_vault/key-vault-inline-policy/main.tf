@@ -36,6 +36,7 @@ resource "azurerm_key_vault" "TerraFailKeyVault" {
 }
 
 resource "azurerm_key_vault_key" "TerraFailKeyVault_key" {
+  # Drata: Configure [azurerm_key_vault_key.rotation_policy] to minimize the risk of key exposure by ensuring that sensitive values are periodically rotated
   name         = "TerraFailKeyVault"
   key_vault_id = azurerm_key_vault.TerraFailKeyVault.id
   key_type     = "EC"
