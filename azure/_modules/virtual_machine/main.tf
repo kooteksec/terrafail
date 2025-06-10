@@ -125,6 +125,7 @@ resource "azurerm_availability_set" "TerraFailVM_availability_set" {
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "TerraFailVM_vault" {
+  # Drata: Set [azurerm_key_vault.enable_rbac_authorization] to [true] to configure resource authentication using role based access control (RBAC). RBAC allows for more granularity when defining permissions for users and workloads that can access a resource
   # Drata: Configure [azurerm_key_vault.tags] to ensure that organization-wide tagging conventions are followed.
   name                        = "TerraFailVM_vault"
   location                    = azurerm_resource_group.TerraFailVM_rg.location
