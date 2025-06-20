@@ -40,6 +40,7 @@ resource "aws_apigatewayv2_integration" "TerraFailAPIv2_integration" {
 }
 
 resource "aws_apigatewayv2_stage" "TerraFailAPIv2_stage" {
+  # Drata: Configure [aws_apigatewayv2_stage.access_log_settings] to ensure that security-relevant events are logged to detect malicious activity
   api_id = aws_apigatewayv2_api.TerraFailAPIv2.id
   name   = "TerraFailAPIv2_stage"
 }
