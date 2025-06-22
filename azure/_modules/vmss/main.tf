@@ -30,7 +30,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "TerraFailVMSS_linux" {
   }
 
   automatic_os_upgrade_policy {
-    enable_automatic_os_upgrade = false
+    enable_automatic_os_upgrade = true
     disable_automatic_rollback  = true
   }
 
