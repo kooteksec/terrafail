@@ -15,6 +15,7 @@ resource "aws_elasticache_cluster" "TerraFailElasticache_cluster_mem" {
 }
 
 resource "aws_elasticache_cluster" "TerraFailElasticache_cluster_red" {
+  # Drata: Configure [aws_elasticache_cluster.tags] to ensure that organization-wide tagging conventions are followed.
   # Drata: Specify [aws_elasticache_cluster.snapshot_retention_limit] to ensure sensitive data is only available when necessary. Setting snapshot retention to 0 will disable automatic backups
   cluster_id           = "TerraFailElasticache_cluster_red"
   engine               = "redis"
