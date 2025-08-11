@@ -4,6 +4,7 @@
 # ELBv1
 # ---------------------------------------------------------------------
 resource "aws_elb" "TerraFailELB" {
+  # Drata: Configure [aws_elb.access_logs.enabled] to ensure that security-relevant events are logged to detect malicious activity
   # Drata: Configure [aws_elb.tags] to ensure that organization-wide tagging conventions are followed.
   name     = "TerraFailELB"
   subnets  = [aws_subnet.TerraFailELB_subnet.id]
