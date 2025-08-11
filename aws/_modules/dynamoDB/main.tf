@@ -4,6 +4,7 @@
 # DynamoDB
 # ---------------------------------------------------------------------
 resource "aws_dynamodb_table" "TerraFailDynamoDB" {
+  # Drata: Set [dynamo_dbtable.table.deletion_protection_enabled] to [true] to prevent accidental or unauthorized deletion of critical assets
   # Drata: Configure [aws_dynamodb_table.tags] to ensure that organization-wide tagging conventions are followed.
   name           = "TerraFailDynamoDB"
   billing_mode   = "PROVISIONED"
