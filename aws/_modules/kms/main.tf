@@ -9,6 +9,7 @@ resource "aws_kms_alias" "TerraFailKMS_alias" {
 }
 
 resource "aws_kms_key" "TerraFailKMS_key" {
+  # Drata: Configure [aws_kms_key.tags] to ensure that organization-wide tagging conventions are followed.
   description             = "KMS key template"
   deletion_window_in_days = 10
   key_usage               = "ENCRYPT_DECRYPT"
@@ -16,6 +17,8 @@ resource "aws_kms_key" "TerraFailKMS_key" {
   is_enabled              = false
 
   policy = <<EOF
+  # Drata: Explicitly define principals for [aws_kms_key.policy] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as (*)
+  # Drata: Explicitly define actions for [aws_kms_key.policy] in adherence with the principal of least privilege. Avoid the use of overly permissive allow-all access patterns such as (*)
 {
   "Version": "2012-10-17",
   "Statement": [

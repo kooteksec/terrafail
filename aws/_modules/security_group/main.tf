@@ -4,6 +4,7 @@
 # Network
 # ---------------------------------------------------------------------
 resource "aws_vpc" "TerraFailSecurityGroup_vpc" {
+  # Drata: Configure [aws_vpc.tags] to ensure that organization-wide tagging conventions are followed.
   cidr_block = "10.0.0.0/16"
 }
 
@@ -23,6 +24,7 @@ resource "aws_security_group" "TerraFailSecurityGroup" {
     to_port          = 443
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
+    # Drata: Ensure that [aws_security_group.ingress.cidr_blocks] is explicitly defined and narrowly scoped to only allow traffic from trusted sources
     ipv6_cidr_blocks = ["::/0"]
   }
 
@@ -31,6 +33,7 @@ resource "aws_security_group" "TerraFailSecurityGroup" {
     to_port          = 443
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
+    # Drata: Ensure that [aws_security_group.egress.cidr_blocks] is explicitly defined and narrowly scoped to only allow traffic to trusted sources
     ipv6_cidr_blocks = ["::/0"]
   }
 }
